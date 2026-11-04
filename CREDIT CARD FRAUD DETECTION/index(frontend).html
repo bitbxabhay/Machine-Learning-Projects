@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit Card Fraud Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000; --panel:#03170b; --panel2:#062713; --line:#0b8f43;
+  --text:#9ba77a; --muted:#9ba77a; --blue:#2d7bff; --cyan:#9ba77a;
+  --green:#39ff88; --red:#ff4d6a; --amber:#ffc542;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar{display:none}
+body{
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--text);
+  background:var(--bg);
+  min-height:100vh;padding:40px 24px 60px;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:center;margin-bottom:34px}
+h1{font-size:clamp(38px,5vw,60px);line-height:1.05;font-weight:800;letter-spacing:-.02em}
+h1 span{display:block;color:var(--text)}
+.hero p{margin-top:18px;color:var(--muted);font-size:18px;line-height:1.55;max-width:420px}
+.hero .bar{width:90px;height:3px;border-radius:3px;margin-top:20px;background:linear-gradient(90deg,var(--cyan),transparent)}
+
+.card-art{position:relative;height:250px;display:flex;align-items:center;justify-content:center}
+.ring{position:absolute;width:430px;height:130px;border:2px solid rgba(57,255,136,.55);border-radius:50%;transform:rotate(-12deg);filter:drop-shadow(0 0 10px rgba(57,255,136,.6))}
+.cc{position:relative;width:320px;height:196px;border-radius:18px;padding:22px;transform:perspective(900px) rotateY(-18deg) rotateX(8deg) rotate(-4deg);
+  background:linear-gradient(135deg,#8cffb8,#12c96a 45%,#08713d 100%);box-shadow:0 0 32px rgba(57,255,136,.5),0 30px 60px rgba(20,180,90,.32),inset 0 0 0 1px rgba(220,255,232,.4)}
+.cc b{display:block;font-size:15px;letter-spacing:.08em;text-align:right;opacity:.9;color:#000}
+.chip{width:46px;height:36px;border-radius:7px;margin-top:22px;background:linear-gradient(135deg,#f6d77a,#c9972b)}
+.num{position:absolute;left:22px;bottom:30px;font-size:20px;letter-spacing:.12em;opacity:.9;color:#000}
+.shield{position:absolute;right:-6px;top:6px;width:150px;filter:drop-shadow(0 0 18px rgba(57,255,136,.7))}
+
+/* ---------- main grid ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch}
+.panel{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--green);border-radius:20px;padding:22px;
+  box-shadow:0 0 24px rgba(57,255,136,.12),inset 0 0 22px rgba(57,255,136,.035)}
+.panel h2{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:700;margin-bottom:18px}
+.ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:rgba(45,123,255,.2);color:var(--text)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);font-weight:600;margin-bottom:8px}
+input{width:100%;background:#001407;border:1px solid #087c3b;border-radius:10px;color:var(--text);
+  font:inherit;font-size:17px;padding:13px 15px;outline:none;transition:border-color .15s, box-shadow .15s}
+input:focus-visible{border-color:var(--green);box-shadow:0 0 0 3px rgba(57,255,136,.22)}
+.sub{display:flex;align-items:center;gap:10px;margin:22px 0 12px;font-weight:700;font-size:16px}
+.sub i{color:var(--cyan);font-style:normal}
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.vcell{background:#001407;border:1px solid #087c3b;border-radius:10px;padding:8px 10px}
+.vcell span{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.vcell input{background:transparent;border:0;padding:2px 0;font-size:15px;box-shadow:none}
+.vcell:focus-within{border-color:var(--green);box-shadow:0 0 12px rgba(57,255,136,.16)}
+.more{width:100%;margin-top:12px;background:transparent;border:1px solid var(--line);color:var(--muted);
+  border-radius:10px;padding:10px;font:inherit;font-size:14px;cursor:pointer}
+.more:hover{color:var(--text);border-color:var(--blue)}
+#extra{display:none;margin-top:10px}
+#extra.open{display:grid}
+.actions{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;border:0;border-radius:12px;padding:15px;font:inherit;font-size:17px;font-weight:700;color:var(--text);cursor:pointer;
+  background:linear-gradient(90deg,#2a63ff,#27a8ff);box-shadow:0 10px 30px rgba(42,99,255,.4);transition:transform .12s, opacity .12s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.6;cursor:wait}
+#go{color:#000;background:linear-gradient(90deg,#39ff88,#39ff88);box-shadow:0 0 22px rgba(57,255,136,.45)}
+#go:hover{color:#000;box-shadow:0 0 30px rgba(57,255,136,.7)}
+.btn.ghost{flex:0 0 auto;background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--muted);font-size:14px;padding:15px 18px}
+.btn.ghost:hover{color:var(--text);border-color:var(--blue)}
+
+/* ---------- result ---------- */
+.result{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  border:1.5px solid var(--green);transition:background .4s;
+  background:radial-gradient(ellipse at 50% 12%,rgba(57,255,136,.18),transparent 58%),linear-gradient(180deg,var(--panel2),var(--panel));
+  box-shadow:0 0 30px rgba(57,255,136,.16),inset 0 0 28px rgba(57,255,136,.04)}
+.badge{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--c,var(--blue));
+  box-shadow:0 0 30px rgba(var(--rgb,45,123,255),.7);margin-bottom:16px}
+.badge svg{width:32px;height:32px}
+.result h3{font-size:30px;font-weight:800;color:var(--text)}
+.result .msg{color:var(--muted);margin-top:6px;font-size:16px}
+.gauge{position:relative;width:300px;margin-top:26px}
+.gauge svg{width:100%;display:block;overflow:visible}
+.gauge .read{position:absolute;left:0;right:0;bottom:6px}
+.gauge .pct{font-size:44px;font-weight:800;color:var(--text)}
+.gauge .lbl{font-size:17px;color:var(--muted)}
+.thr{width:100%;margin-top:22px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:15px}
+.thr b{color:var(--text)}
+.err{color:var(--text);font-size:14px;margin-top:12px;min-height:18px}
+
+@media (max-width:900px){
+  .hero,.grid{grid-template-columns:1fr}
+  .card-art{height:220px}
+  .vgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <h1>Credit Card 💳<span>Fraud Detection</span></h1>
+      <p>Enter transaction details to check if the transaction is genuine or fraud.</p>
+      <div class="bar"></div>
+    </div>
+    <div class="card-art" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="cc"><b>CREDIT CARD</b><div class="chip"></div><div class="num">1234 5678 9012 3456</div></div>
+      <svg class="shield" viewBox="0 0 120 140" fill="none">
+        <path d="M60 6 108 24v38c0 33-21 58-48 72C33 120 12 95 12 62V24L60 6Z" fill="rgba(20,180,80,.35)" stroke="#39ff88" stroke-width="3"/>
+        <path d="m38 70 15 15 30-34" stroke="#caffdc" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="panel">
+      <h2><span class="ico">▭</span> Transaction Details</h2>
+      <div class="row2">
+        <div><label for="time">🕒 Transaction Time</label><input id="time" type="number" step="any" value="12345.0"></div>
+        <div><label for="amount">💲 Transaction Amount</label><input id="amount" type="number" step="any" value="239.89"></div>
+      </div>
+
+      <div class="sub"><i>🗒️</i> PCA Features (V1 – V28)</div>
+      <div class="vgrid" id="vfirst"></div>
+      <div class="vgrid" id="extra"></div>
+      <button class="more" id="toggle" type="button">… and 20 more features (V9 – V28) ⌄</button>
+
+      <div class="actions">
+        <button class="btn" id="go" type="button">⚡ Predict Transaction</button>
+        <button class="btn ghost" id="sample" type="button" title="Fill all fields from one CSV row">Paste CSV row</button>
+      </div>
+      <div class="err" id="err" role="alert"></div>
+    </section>
+
+    <section class="panel result" id="result" style="--c:#22e08a;--rgb:34,224,138">
+      <div class="badge" id="badge"></div>
+      <h3 id="title">Waiting for input</h3>
+      <div class="msg" id="msg">Fill the details and press Predict.</div>
+      <div class="gauge">
+        <svg viewBox="0 0 240 130">
+          <defs>
+            <linearGradient id="gg" x1="0" x2="1">
+              <stop offset="0" stop-color="#b6e22b"/><stop offset=".5" stop-color="#22e08a"/><stop offset="1" stop-color="#16a06a"/>
+            </linearGradient>
+          </defs>
+          <path d="M20 120A100 100 0 0 1 220 120" fill="none" stroke="#14224a" stroke-width="16" stroke-linecap="round"/>
+          <path id="arc" d="M20 120A100 100 0 0 1 220 120" fill="none" stroke="url(#gg)" stroke-width="16" stroke-linecap="round"
+                pathLength="100" stroke-dasharray="0 100" style="transition:stroke-dasharray .9s cubic-bezier(.2,.8,.2,1)"/>
+        </svg>
+        <div class="read"><div class="pct" id="pct">0.0%</div><div class="lbl">Fraud Probability</div></div>
+      </div>
+      <div class="thr">🛡 Classification Threshold: <b id="thr">0.40</b></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const defaults = [-1.3598,-0.0727,-1.9046,-0.1094,-0.4224,-0.5150,-0.3305,0.6402];
+
+// build V1..V28 inputs
+const cells = [];
+for (let i = 1; i <= 28; i++){
+  const d = document.createElement('div'); d.className = 'vcell';
+  d.innerHTML = `<span>V${i}</span><input type="number" step="any" id="v${i}" value="${defaults[i-1] ?? 0}">`;
+  (i <= 8 ? $('vfirst') : $('extra')).appendChild(d);
+}
+$('extra').className = 'vgrid'; $('extra').style.display = 'none';
+$('toggle').onclick = () => {
+  const open = $('extra').style.display === 'none';
+  $('extra').style.display = open ? 'grid' : 'none';
+  $('extra').style.marginTop = '10px';
+  $('toggle').textContent = open ? 'Show fewer features ⌃' : '… and 20 more features (V9 – V28) ⌄';
+};
+
+// paste a Kaggle CSV row: Time,V1..V28,Amount[,Class]
+$('sample').onclick = () => {
+  const raw = prompt('Paste one row from creditcard.csv (Time, V1…V28, Amount):');
+  if (!raw) return;
+  const n = raw.split(',').map(s => parseFloat(s.trim()));
+  if (n.length < 30 || n.slice(0,30).some(isNaN)) { $('err').textContent = 'Invalid Value !'; return; }
+  $('time').value = n[0];
+  for (let i = 1; i <= 28; i++) $('v'+i).value = n[i];
+  $('amount').value = n[29];
+  $('err').textContent = '';
+};
+
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#06231a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>';
+const CROSS = '<svg viewBox="0 0 24 24" fill="none" stroke="#2a0710" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+$('badge').innerHTML = CHECK;
+
+function show(prob, isFraud, thr){
+  const r = $('result');
+  if (isFraud){
+    r.style.setProperty('--c', '#ff4d6a'); r.style.setProperty('--rgb', '255,77,106');
+    $('badge').innerHTML = CROSS; $('title').textContent = 'Fraud Transaction';
+    $('msg').textContent = 'This transaction looks suspicious. Review it before approving.';
+    document.querySelector('#gg').innerHTML = '<stop offset="0" stop-color="#ffc542"/><stop offset="1" stop-color="#ff4d6a"/>';
+  } else {
+    r.style.setProperty('--c', '#22e08a'); r.style.setProperty('--rgb', '34,224,138');
+    $('badge').innerHTML = CHECK; $('title').textContent = 'Genuine Transaction';
+    $('msg').textContent = 'This transaction appears to be safe.';
+    document.querySelector('#gg').innerHTML = '<stop offset="0" stop-color="#b6e22b"/><stop offset=".5" stop-color="#22e08a"/><stop offset="1" stop-color="#16a06a"/>';
+  }
+  const pct = prob * 100;
+  $('pct').textContent = pct.toFixed(1) + '%';
+  $('arc').setAttribute('stroke-dasharray', `${Math.max(pct, 1)} 100`);
+  $('thr').textContent = thr.toFixed(2);
+}
+
+$('go').onclick = async () => {
+  $('err').textContent = '';
+  const features = [];
+  for (let i = 1; i <= 28; i++) features.push(parseFloat($('v'+i).value));
+  const payload = { Time: parseFloat($('time').value), Amount: parseFloat($('amount').value), features };
+  if (isNaN(payload.Time) || isNaN(payload.Amount) || features.some(isNaN)){
+    $('err').textContent = 'Invaild Number Type'; return;
+  }
+  $('go').disabled = true; $('go').textContent = 'Checking…';
+  try{
+    const res = await fetch('http://127.0.0.1:5000/predict', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const out = await res.json();
+    if (!res.ok) throw new Error(out.error || 'Server error');
+    show(out.fraud_probability, out.is_fraud, out.threshold);
+  }catch(e){
+    $('err').textContent = 'Prediction fail: ' + e.message + ' (kya app.py chal raha hai?)';
+  }finally{
+    $('go').disabled = false; $('go').textContent = '⚡ Predict Transaction';
+  }
+};
+</script>
+</body>
+</html>
