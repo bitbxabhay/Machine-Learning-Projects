@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CKD Predictor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:#f5f7ff;min-height:100vh;
+  background:#02030a;
+  display:grid;grid-template-columns:minmax(320px,.78fr) minmax(0,1.64fr);gap:34px;padding:32px 42px;align-items:start}
+.left{padding-top:20px;position:sticky;top:32px}
+.logo{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-left:32px;font-size:27px;font-weight:700;white-space:nowrap}
+.logo img{width:58px;height:46px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(126,72,255,.22))}
+.logo span{background:linear-gradient(90deg,#efffcf,#c2f66f 58%,#9ddb47);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 18px rgba(167,243,77,.24)}
+h1{font-size:56px;line-height:.98;font-weight:800;letter-spacing:-1.7px;margin:40px 0 0 32px;width:calc(100% - 32px)}
+h1 em{font-style:normal;background:linear-gradient(90deg,#c35cff,#a58cff 38%,#c6f56c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 10px rgba(167,243,77,.22))}
+.sub{margin:12px 0 0 32px;width:calc(100% - 32px);color:#d9e8c5;font-size:17px;line-height:1.35;
+  text-shadow:0 0 12px rgba(167,243,77,.12)}
+.kidneys{margin:16px 0 14px;display:grid;place-items:center}
+.kidneys img{width:min(100%,360px);height:auto;display:block;object-fit:contain;
+  filter:drop-shadow(0 0 18px rgba(48,180,255,.18)) drop-shadow(0 0 26px rgba(151,82,255,.14))}
+.health-note{display:flex;gap:12px;align-items:flex-start;max-width:390px;margin:0 auto;padding:13px 16px;
+  border:1px solid rgba(65,126,198,.48);border-radius:15px;
+  background:linear-gradient(135deg,rgba(6,18,40,.97),rgba(3,12,29,.97) 55%,rgba(6,22,47,.96));
+  box-shadow:0 0 28px rgba(0,64,145,.2),0 0 42px rgba(0,125,255,.12),0 0 70px rgba(112,63,255,.07),inset 0 1px rgba(163,202,238,.12);transform:translate(24px,52px)}
+.health-note .note-icon{width:32px;height:32px;flex:none;border-radius:50%;display:grid;place-items:center;
+  background:rgba(16,54,112,.82);border:1px solid rgba(79,165,255,.48);color:#8ed8ff;font-size:16px;
+  box-shadow:0 0 12px rgba(0,117,255,.22)}
+.health-note strong{display:block;color:#e5edf8;font-size:13px;margin:1px 0 4px}
+.health-note p{color:#bfc9ea;font-size:11px;line-height:1.45}
+.card{background:linear-gradient(135deg,rgba(6,18,40,.97),rgba(3,12,29,.97) 55%,rgba(6,22,47,.96));
+  border:1px solid rgba(65,126,198,.58);border-radius:26px;padding:20px 24px 12px;
+  -webkit-backdrop-filter:blur(22px) saturate(115%);backdrop-filter:blur(22px) saturate(115%);
+  box-shadow:0 0 28px rgba(0,64,145,.2),0 0 42px rgba(0,125,255,.12),0 0 70px rgba(112,63,255,.07),inset 0 1px rgba(163,202,238,.12)}
+.head{display:flex;gap:14px;align-items:center;margin-bottom:20px}
+.head .ic{width:56px;height:56px;flex:none;border-radius:50%;background:linear-gradient(145deg,rgba(8,37,77,.98),rgba(4,20,45,.98));
+  border:1px solid rgba(85,153,211,.7);display:grid;place-items:center;font-size:25px;box-shadow:0 0 14px rgba(0,95,190,.22),inset 0 0 10px rgba(14,77,145,.2)}
+.head h2{font-size:23px;font-weight:700}
+.head p{color:#b8c2e6;font-size:12px;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 20px}
+.f{display:flex;gap:10px;align-items:center;min-width:0}
+.f .ic{width:36px;height:36px;flex:none;border-radius:50%;background:linear-gradient(145deg,#071d43,#030d23);
+  border:1px solid rgba(91,177,255,.82);box-shadow:0 0 12px rgba(0,106,237,.26),inset 0 0 9px rgba(20,88,173,.3);
+  display:grid;place-items:center;font-size:17px;color:#c5eaff;text-shadow:0 0 8px rgba(83,183,255,.42)}
+.f label{display:block;font-weight:600;font-size:13px;line-height:1.15;margin:1px 0 5px}
+.f .w{flex:1;min-width:0}
+input,select{width:100%;height:35px;background:rgba(8,27,61,.9);border:1px solid rgba(66,119,180,.55);
+  color:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-size:12px;outline:none}
+input::placeholder{color:#8995c2}
+input:focus,select:focus{border-color:#51b7ff;box-shadow:0 0 0 3px rgba(33,145,255,.22),0 0 12px rgba(0,137,255,.2)}
+select option{background:#141a52}
+.btn{display:block;width:53%;min-width:250px;margin:20px auto 0;padding:10px 16px;border:0;border-radius:40px;color:#fff;
+  font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(100deg,#8a28ed,#493cff 52%,#168be9);
+  box-shadow:0 0 26px rgba(94,68,255,.36),0 0 12px rgba(0,145,255,.18)}
+.btn:disabled{opacity:.6;cursor:wait}
+.or{text-align:center;color:#bbc4e4;font-size:12px;margin:6px 0 3px;display:flex;align-items:center;gap:12px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:rgba(78,93,175,.42)}
+.reset{display:block;margin:0 auto;background:rgba(5,31,79,.78);border:1px solid rgba(67,142,224,.66);color:#e8ecff;
+  border-radius:30px;padding:6px 20px;cursor:pointer;font:inherit;font-size:12px}
+#result{margin-top:16px;border-radius:18px;padding:16px 20px;text-align:center;display:none;font-size:16px;font-weight:600}
+#result.bad{display:block;background:rgba(239,68,68,.15);border:1px solid #ef4444}
+#result.good{display:block;background:rgba(34,197,94,.15);border:1px solid #22c55e}
+#result small{display:block;font-weight:400;color:#cbd2f0;margin-top:6px;font-size:13px}
+@media(max-width:1100px){body{grid-template-columns:minmax(280px,.8fr) minmax(0,1.5fr);gap:24px;padding:24px}.left{position:static}h1{font-size:46px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){body{grid-template-columns:1fr;padding:22px;gap:24px}.left{padding-top:0}.logo{font-size:24px}h1{font-size:44px;margin-top:28px}.kidneys{max-width:440px;margin-left:auto;margin-right:auto}.health-note{max-width:440px;transform:none}.card{padding:18px 16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.btn{width:100%;min-width:0}.head h2{font-size:20px}}
+</style>
+</head>
+<body>
+<section class="left">
+  <div class="logo"><img src="/logo.png" height="52" alt=""> <span>CKD Predictor</span></div>
+  <h1>Know Your<br><em>Kidney Health</em></h1>
+  <p class="sub">Enter the details below to check the risk<br>of Chronic Kidney Disease (CKD).</p>
+  <div class="kidneys"><img src="/kidney-neon.svg" alt="Neon kidney illustration"></div>
+  <div class="health-note">
+    <span class="note-icon" aria-hidden="true">✦</span>
+    <div>
+      <strong>A small step toward better awareness</strong>
+      <p>Use your results as a starting point for a conversation with your healthcare professional.</p>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="head"><div class="ic">🩺</div>
+    <div><h2>Patient Details</h2><p>Fill in all the details for accurate prediction.</p></div></div>
+  <form id="form" autocomplete="off"><div class="grid" id="grid"></div></form>
+  <button class="btn" id="go" type="button">Predict CKD →</button>
+  <div class="or">or</div>
+  <button class="reset" id="reset" type="button">⟳ Reset Form</button>
+  <div id="result"></div>
+</section>
+
+<script>
+const num = [
+ ["age","Age","📅","Enter age (e.g. 45)"],["bp","Blood Pressure","🫀","Enter BP (e.g. 120)"],["sg","Specific Gravity","💧","Enter SG (e.g. 1.020)"],
+ ["al","Albumin","🧪","Enter albumin (e.g. 1)"],["su","Sugar","🍬","Enter sugar (e.g. 0)"],
+ ["bgr","Blood Glucose Random","🍭","Enter bgr (e.g. 120)"],["bu","Blood Urea","⚗️","Enter bu (e.g. 36)"],["sc","Serum Creatinine","🧬","Enter sc (e.g. 1.2)"],
+ ["sod","Sodium","Na","Enter sod (e.g. 135)"],["pot","Potassium","K","Enter pot (e.g. 4.5)"],["hemo","Hemoglobin","Hb","Enter hemo (e.g. 15.0)"],
+ ["pcv","Packed Cell Volume","📊","Enter pcv (e.g. 44)"],["wc","White Blood Cell Count","🔬","Enter wc (e.g. 7800)"],["rc","Red Blood Cell Count","🔴","Enter rc (e.g. 5.2)"]
+];
+const cat = [
+ ["rbc","Red Blood Cells","🩸",[["normal","Normal"],["abnormal","Abnormal"]]],
+ ["pc","Pus Cell","🧫",[["normal","Normal"],["abnormal","Abnormal"]]],
+ ["pcc","Pus Cell Clumps","🫧",[["notpresent","Not present"],["present","Present"]]],
+ ["ba","Bacteria","🦠",[["notpresent","Not present"],["present","Present"]]],
+ ["htn","Hypertension","📈",[["no","No"],["yes","Yes"]]],
+ ["dm","Diabetes Mellitus","💉",[["no","No"],["yes","Yes"]]],
+ ["cad","Coronary Artery Disease","💗",[["no","No"],["yes","Yes"]]],
+ ["appet","Appetite","🍴",[["good","Good"],["poor","Poor"]]],
+ ["pe","Pedal Edema","🦶",[["no","No"],["yes","Yes"]]],
+ ["ane","Anemia","A−",[["no","No"],["yes","Yes"]]]
+];
+
+const grid = document.getElementById("grid");
+num.forEach(([id,l,i,p])=>grid.insertAdjacentHTML("beforeend",
+ `<div class="f"><div class="ic">${i}</div><div class="w"><label for="${id}">${l}</label>
+  <input id="${id}" name="${id}" type="number" step="any" placeholder="${p}"></div></div>`));
+cat.forEach(([id,l,i,options])=>grid.insertAdjacentHTML("beforeend",
+ `<div class="f"><div class="ic">${i}</div><div class="w"><label for="${id}">${l}</label>
+  <select id="${id}" name="${id}"><option value="">Select</option>${options.map(([value,label])=>`<option value="${value}">${label}</option>`).join("")}</select></div></div>`));
+
+const res = document.getElementById("result"), btn = document.getElementById("go");
+
+btn.onclick = async () => {
+  const data = {};
+  for (const el of document.querySelectorAll("#form input, #form select")) {
+    if (el.value === "") { res.className="bad"; res.textContent="Please fill in: " + el.name; el.focus(); return; }
+    data[el.name] = el.value;
+  }
+  btn.disabled = true; btn.textContent = "Predicting...";
+  try {
+    const r = await fetch("/predict", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data)});
+    const j = await r.json();
+    if (j.error) { res.className="bad"; res.textContent = "Error: " + j.error; }
+    else {
+      res.className = j.ckd ? "bad" : "good";
+      res.innerHTML = (j.ckd ? "⚠️ High risk: CKD detected" : "✅ No CKD detected") +
+        (j.probability!==null ? `<small>CKD probability: ${(j.probability*100).toFixed(1)}%</small>` : "") +
+        `<small>This is a screening aid, not a diagnosis. Please consult a doctor.</small>`;
+    }
+  } catch (e) { res.className="bad"; res.textContent = "Server not reachable."; }
+  btn.disabled = false; btn.textContent = "Predict CKD →";
+};
+
+document.getElementById("reset").onclick = () => { document.getElementById("form").reset(); res.className=""; res.style.display="none"; };
+</script>
+</body>
+</html>

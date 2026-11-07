@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500" fill="none">
+  <defs>
+    <linearGradient id="leftFill" x1="72" y1="110" x2="250" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123F9A" stop-opacity=".68"/>
+      <stop offset="1" stop-color="#061638" stop-opacity=".18"/>
+    </linearGradient>
+    <linearGradient id="rightFill" x1="488" y1="110" x2="310" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#552080" stop-opacity=".66"/>
+      <stop offset="1" stop-color="#170D38" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="leftLine" x1="75" y1="112" x2="257" y2="377" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#54E7FF"/>
+      <stop offset="1" stop-color="#387BFF"/>
+    </linearGradient>
+    <linearGradient id="rightLine" x1="485" y1="112" x2="303" y2="377" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF78E8"/>
+      <stop offset="1" stop-color="#9B65FF"/>
+    </linearGradient>
+    <filter id="glowCyan" x="22" y="46" width="270" height="396" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="11" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glowPurple" x="268" y="46" width="270" height="396" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="11" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glowFloor" x="80" y="420" width="400" height="66" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="280" cy="454" rx="202" ry="15" stroke="#258BFF" stroke-opacity=".62" stroke-width="2" filter="url(#glowFloor)"/>
+  <ellipse cx="280" cy="454" rx="202" ry="15" stroke="#258BFF" stroke-opacity=".72" stroke-width="2"/>
+
+  <g filter="url(#glowCyan)">
+    <path d="M228 107C194 66 124 72 83 105C43 137 29 204 40 270C52 343 96 391 157 390C207 389 238 358 246 319C252 289 237 266 220 246C243 224 254 192 245 161C241 143 234 124 228 107Z" fill="url(#leftFill)" stroke="url(#leftLine)" stroke-width="7"/>
+    <path d="M219 155C187 163 166 190 166 220C166 241 176 259 191 273C175 287 168 306 173 326C177 344 190 359 207 368" stroke="#75E9FF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M214 189C231 199 241 215 242 234M210 297C226 288 236 276 241 261" stroke="#69DFFF" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#glowPurple)">
+    <path d="M332 107C366 66 436 72 477 105C517 137 531 204 520 270C508 343 464 391 403 390C353 389 322 358 314 319C308 289 323 266 340 246C317 224 306 192 315 161C319 143 326 124 332 107Z" fill="url(#rightFill)" stroke="url(#rightLine)" stroke-width="7"/>
+    <path d="M341 155C373 163 394 190 394 220C394 241 384 259 369 273C385 287 392 306 387 326C383 344 370 359 353 368" stroke="#F08CFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M346 189C329 199 319 215 318 234M350 297C334 288 324 276 319 261" stroke="#E788FF" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <path d="M258 87C253 116 255 147 263 170L278 196" stroke="#FF5D9C" stroke-width="15" stroke-linecap="round"/>
+  <path d="M302 87C307 116 305 147 297 170L282 196" stroke="#FF5D9C" stroke-width="15" stroke-linecap="round"/>
+  <path d="M258 87C253 116 255 147 263 170L278 196" stroke="#63E9FF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M302 87C307 116 305 147 297 170L282 196" stroke="#63E9FF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M275 202C274 272 272 334 264 407M285 202C286 272 288 334 296 407" stroke="#32CFFF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M275 202C274 272 272 334 264 407M285 202C286 272 288 334 296 407" stroke="#8AF4FF" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
+</svg>
