@@ -8,7 +8,6 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, template_folder=BASE)      # index.html isi folder me hai
 
 def find_value(d, *words):
-    """dict me aisi key dhoondo jisme koi bhi word aata ho (jaise 'thresh', 'auc')."""
     for k, v in d.items():
         if any(w in str(k).lower() for w in words) and isinstance(v, (int, float)):
             return float(v)
@@ -19,7 +18,6 @@ saved = joblib.load(os.path.join(BASE, "gb_model_churn.pkl"))
 THRESHOLD, ROC_AUC = None, None
 
 if isinstance(saved, dict):
-    # model + threshold + roc value ek dict me saved hai
     model = next(v for v in saved.values() if hasattr(v, "predict_proba"))
     THRESHOLD = find_value(saved, "thresh")
     ROC_AUC = find_value(saved, "auc", "roc")
@@ -29,7 +27,7 @@ else:
     ROC_AUC = getattr(saved, "roc_auc", None)
 
 if THRESHOLD is None:
-    THRESHOLD = 0.5          # model file me threshold nahi mila to default
+    THRESHOLD = 0.306574
 if ROC_AUC is not None:
     ROC_AUC = round(ROC_AUC, 3)
 else:
