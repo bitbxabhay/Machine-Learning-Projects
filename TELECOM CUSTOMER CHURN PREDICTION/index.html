@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Telecom Customer Churn Prediction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --ink: #eff8ed;
+      --muted: #a7b3a5;
+      --violet: #b7ff5a;
+      --indigo: #b7ff5a;
+      --line: #2b3829;
+      --lime-glow: rgba(183, 255, 90, .14)
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none
+    }
+
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: radial-gradient(900px 380px at 0% 0%, rgba(183, 255, 90, .08) 0%, transparent 70%), radial-gradient(900px 420px at 100% 0%, rgba(183, 255, 90, .05) 0%, transparent 70%), #070a08
+    }
+
+    .hero {
+      position: relative;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 26px 32px 10px;
+      min-height: 210px;
+      animation: rise-in .7s ease-out both
+    }
+
+    .brand {
+      position: absolute;
+      left: 32px;
+      top: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 19px
+    }
+
+    .brand i {
+      font-size: 34px;
+      color: var(--violet)
+    }
+
+    .hero-text {
+      text-align: center;
+      padding-top: 14px
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 4.6vw, 52px);
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -.5px
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #c8ff85, #8edb42);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent
+    }
+
+    .hero p {
+      margin-top: 12px;
+      color: #b9c5b7;
+      font-size: clamp(14px, 1.5vw, 18px)
+    }
+
+    .hero-line {
+      display: block;
+      width: 90px;
+      height: 3px;
+      border-radius: 3px;
+      margin: 12px auto 0;
+      background: var(--violet)
+    }
+
+    .chip-top {
+      position: absolute;
+      right: 32px;
+      top: 26px;
+      background: #101610;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      box-shadow: 0 0 18px var(--lime-glow);
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .chip-top i {
+      color: var(--indigo)
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px 40px
+    }
+
+    .card {
+      background: #0c110d;
+      border-radius: 26px;
+      padding: 22px 28px 26px;
+      box-shadow: 0 0 0 1px rgba(183, 255, 90, .12), 0 18px 50px rgba(0, 0, 0, .45), 0 0 28px rgba(183, 255, 90, .06)
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px
+    }
+
+    .card-title h2 {
+      font-size: 22px;
+      font-weight: 700;
+      white-space: nowrap
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #10160b;
+      font-size: 19px;
+      background: linear-gradient(135deg, #c8ff85, #8edb42);
+      box-shadow: 0 0 18px rgba(183, 255, 90, .28)
+    }
+
+    .rule {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(183, 255, 90, .65), transparent)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px 22px
+    }
+
+    .grid>div {
+      animation: rise-in .55s ease-out both
+    }
+
+    .grid>div:nth-child(5n+2) {
+      animation-delay: .04s
+    }
+
+    .grid>div:nth-child(5n+3) {
+      animation-delay: .08s
+    }
+
+    .grid>div:nth-child(5n+4) {
+      animation-delay: .12s
+    }
+
+    .grid>div:nth-child(5n) {
+      animation-delay: .16s
+    }
+
+    .lbl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px
+    }
+
+    .lbl i {
+      color: var(--indigo);
+      font-size: 16px;
+      width: 20px;
+      text-align: center
+    }
+
+    select,
+    input[type=number] {
+      width: 100%;
+      height: 42px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: #101510;
+      padding: 0 14px;
+      font: inherit;
+      font-size: 15px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease, transform .25s ease
+    }
+
+    select {
+      appearance: none;
+      cursor: pointer;
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23b7ff5a' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")
+    }
+
+    input::placeholder {
+      color: #849080
+    }
+
+    select:focus,
+    input[type=number]:focus {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 3px var(--lime-glow), 0 0 14px rgba(183, 255, 90, .12);
+      transform: translateY(-1px)
+    }
+
+    select:hover,
+    input[type=number]:hover {
+      border-color: #52664a
+    }
+
+    .selection-feedback {
+      animation: selection-feedback .38s ease-out
+    }
+
+    /* slide toggle: sirf CSS se */
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 42px;
+      padding: 0 14px;
+      cursor: pointer;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: #101510;
+      user-select: none;
+      transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease, transform .25s ease
+    }
+
+    .switch:hover,
+    .switch:focus-within {
+      border-color: #52664a;
+      box-shadow: 0 0 0 3px rgba(183, 255, 90, .07)
+    }
+
+    .switch.selection-feedback {
+      animation: selection-feedback .38s ease-out
+    }
+
+    .switch input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .track {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      background: #34402f;
+      transition: background .2s;
+      flex: none
+    }
+
+    .track::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #eaffd1;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
+      transition: transform .2s
+    }
+
+    .switch input:checked+.track {
+      background: linear-gradient(90deg, #8edb42, #c8ff85);
+      box-shadow: 0 0 12px rgba(183, 255, 90, .32)
+    }
+
+    .switch input:checked+.track::after {
+      transform: translateX(20px)
+    }
+
+    .switch input:focus-visible+.track {
+      outline: 3px solid rgba(183, 255, 90, .45);
+      outline-offset: 2px
+    }
+
+    .state {
+      font-size: 15px;
+      font-weight: 500
+    }
+
+    .state::after {
+      content: "No"
+    }
+
+    .switch input:checked~.state::after {
+      content: "Yes"
+    }
+
+    .error {
+      color: #ff6b81;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 16px
+    }
+
+    .predict {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 22px auto 0;
+      width: min(320px, 100%);
+      height: 48px;
+      border: none;
+      border-radius: 999px;
+      color: #10160b;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(90deg, #8edb42, #c8ff85);
+      box-shadow: 0 0 20px rgba(183, 255, 90, .22);
+      transition: transform .15s, box-shadow .15s
+    }
+
+    .predict:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 26px rgba(183, 255, 90, .38)
+    }
+
+    .predict:focus-visible {
+      outline: 3px solid rgba(183, 255, 90, .5);
+      outline-offset: 3px
+    }
+
+    .predict i {
+      font-size: 14px
+    }
+
+    .result {
+      margin-top: 24px;
+      border-radius: 26px;
+      padding: 22px 30px;
+      display: grid;
+      grid-template-columns: 200px 1.2fr 1.3fr;
+      gap: 28px;
+      align-items: center;
+      background: linear-gradient(135deg, #0d130e, #101710);
+      border: 1px solid #35452f;
+      box-shadow: 0 0 22px rgba(183, 255, 90, .07);
+      animation: rise-in .65s .12s ease-out both
+    }
+
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes selection-feedback {
+      50% {
+        transform: scale(1.015)
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important
+      }
+    }
+
+    .art {
+      padding-right: 20px;
+      border-right: 1px solid #35452f;
+      text-align: center;
+      font-size: 88px;
+      color: var(--violet);
+      text-shadow: 0 0 22px rgba(183, 255, 90, .25)
+    }
+
+    .prob h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #c8ff85
+    }
+
+    .big {
+      font-size: clamp(40px, 5vw, 62px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: #c8ff85;
+      margin: 2px 0 8px
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 12px;
+      background: #273126;
+      overflow: hidden
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #8edb42, #c8ff85);
+      box-shadow: 0 0 12px rgba(183, 255, 90, .3)
+    }
+
+    .verdict {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1.5px solid
+    }
+
+    .verdict strong {
+      font-size: 24px;
+      display: block;
+      line-height: 1.2
+    }
+
+    .verdict p {
+      font-size: 14px;
+      margin-top: 2px;
+      color: #bcc9b9
+    }
+
+    .vicon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      color: #fff;
+      flex: none
+    }
+
+    .verdict.idle {
+      background: #141a14;
+      border-color: #3c4938;
+      color: var(--ink)
+    }
+
+    .verdict.idle .vicon {
+      background: #596451
+    }
+
+    .verdict.churn {
+      background: #251116;
+      border-color: #743342;
+      color: #ff8ca0
+    }
+
+    .verdict.churn .vicon {
+      background: #c93654
+    }
+
+    .verdict.stay {
+      background: #131d10;
+      border-color: #577a3f;
+      color: #c8ff85;
+      box-shadow: inset 0 0 18px rgba(183, 255, 90, .06)
+    }
+
+    .verdict.stay .vicon {
+      background: #8edb42;
+      color: #10160b;
+      box-shadow: 0 0 14px rgba(183, 255, 90, .3)
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      flex-wrap: wrap
+    }
+
+    .meta span {
+      background: #171f16;
+      border: 1px solid #35452f;
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .meta i {
+      color: var(--indigo)
+    }
+
+    .meta b {
+      width: 1px;
+      height: 20px;
+      background: #42503c
+    }
+
+    @media (max-width:1150px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .result {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .art {
+        display: none
+      }
+
+      .verdict-wrap {
+        grid-column: 1/-1
+      }
+    }
+
+    @media (max-width:760px) {
+      .hero {
+        padding: 90px 18px 10px
+      }
+
+      .brand {
+        left: 18px
+      }
+
+      .chip-top {
+        right: 18px
+      }
+
+      main {
+        padding: 0 16px 30px
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px
+      }
+
+      .result {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media (max-width:480px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      .card {
+        padding: 18px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  {% macro sel(name, options, placeholder=None, cls='') %}
+  <select name="{{ name }}" {% if placeholder %}required{% endif %}>
+    {% if placeholder %}<option value="" disabled {{ 'selected' if not form.get(name) }}>{{ placeholder }}</option>{%
+    endif %}
+    {% for o in options %}<option {{ 'selected' if form.get(name)==o }}>{{ o }}</option>{% endfor %}
+  </select>
+  {% endmacro %}
+
+  {% macro toggle(name) %}
+  <label class="switch"><input type="checkbox" name="{{ name }}" {{ 'checked' if form.get(name) }}><span
+      class="track"></span><span class="state"></span></label>
+  {% endmacro %}
+
+  <header class="hero">
+    <div class="brand"><i class="fa-solid fa-tower-cell"></i><span>Telecom ML</span></div>
+    <div class="hero-text">
+      <h1>Telecom Customer<br><span>Churn Prediction</span></h1>
+      <p>Enter customer details to predict if they are likely to churn or stay.</p>
+      <i class="hero-line"></i>
+    </div>
+    <div class="chip-top"><i class="fa-solid fa-chart-simple"></i> Smart Analytics</div>
+  </header>
+
+  <main>
+    <form method="post" action="#result" class="card">
+      <div class="card-title">
+        <span class="avatar"><i class="fa-solid fa-user"></i></span>
+        <h2>Customer Details</h2>
+        <i class="rule"></i>
+      </div>
+
+      <div class="grid">
+        <div><label class="lbl"><i class="fa-solid fa-venus-mars"></i>Gender</label>
+          {{ sel('gender', ['Male','Female'], 'Select Gender') }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-people-group"></i>Senior Citizen</label>
+          {{ toggle('SeniorCitizen') }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-heart"></i>Partner</label>
+          {{ toggle('Partner') }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-user-group"></i>Dependents</label>
+          {{ toggle('Dependents') }}</div>
+
+        <div><label class="lbl"><i class="fa-regular fa-clock"></i>Tenure</label>
+          <input type="number" name="tenure" min="0" max="72" step="1" placeholder="Enter tenure (months)"
+            value="{{ form.get('tenure','') }}" required>
+        </div>
+
+        <div><label class="lbl"><i class="fa-solid fa-phone"></i>Phone Service</label>
+          {{ sel('PhoneService', ['Yes','No']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-share-nodes"></i>Multiple Lines</label>
+          {{ sel('MultipleLines', ['No','Yes','No phone service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-globe"></i>Internet Service</label>
+          {{ sel('InternetService', ['DSL','Fiber optic','No'], 'Select Internet Service') }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-shield-halved"></i>Online Security</label>
+          {{ sel('OnlineSecurity', ['No','Yes','No internet service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-cloud-arrow-up"></i>Online Backup</label>
+          {{ sel('OnlineBackup', ['No','Yes','No internet service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-shield"></i>Device Protection</label>
+          {{ sel('DeviceProtection', ['No','Yes','No internet service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-headset"></i>Tech Support</label>
+          {{ sel('TechSupport', ['No','Yes','No internet service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-tv"></i>Streaming TV</label>
+          {{ sel('StreamingTV', ['No','Yes','No internet service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-film"></i>Streaming Movies</label>
+          {{ sel('StreamingMovies', ['No','Yes','No internet service']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-file-lines"></i>Contract</label>
+          {{ sel('Contract', ['Month-to-month','One year','Two year']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-leaf"></i>Paperless Billing</label>
+          {{ sel('PaperlessBilling', ['No','Yes']) }}</div>
+
+        <div><label class="lbl"><i class="fa-regular fa-credit-card"></i>Payment Method</label>
+          {{ sel('PaymentMethod', ['Electronic check','Mailed check','Bank transfer (automatic)','Credit card
+          (automatic)']) }}</div>
+
+        <div><label class="lbl"><i class="fa-solid fa-indian-rupee-sign"></i>Monthly Charges</label>
+          <input type="number" name="MonthlyCharges" min="0" step="0.01" placeholder="Enter monthly charges"
+            value="{{ form.get('MonthlyCharges','') }}" required>
+        </div>
+
+        <div><label class="lbl"><i class="fa-solid fa-indian-rupee-sign"></i>Total Charges</label>
+          <input type="number" name="TotalCharges" min="0" step="0.01" placeholder="Enter total charges"
+            value="{{ form.get('TotalCharges','') }}" required>
+        </div>
+      </div>
+
+      {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+
+      <button type="submit" class="predict">
+        <i class="fa-solid fa-wand-magic-sparkles"></i><span>Predict Churn</span><i
+          class="fa-solid fa-chevron-right"></i>
+      </button>
+    </form>
+
+    <section class="result" id="result">
+      <div class="art" aria-hidden="true"><i class="fa-solid fa-mobile-screen-button"></i></div>
+
+      <div class="prob">
+        <h3>Churn Probability</h3>
+        <div class="big">{{ result.probability ~ '%' if result else '--' }}</div>
+        <div class="bar"><i style="width: {{ result.probability if result else 0 }}%"></i></div>
+      </div>
+
+      <div class="verdict-wrap">
+        {% if result %}
+        <div class="verdict {{ 'churn' if result.churn else 'stay' }}">
+          <span class="vicon"><i
+              class="fa-solid {{ 'fa-circle-exclamation' if result.churn else 'fa-circle-check' }}"></i></span>
+          <div><strong>{{ result.label }}</strong>
+            <p>{{ result.message }}</p>
+          </div>
+        </div>
+        {% else %}
+        <div class="verdict idle">
+          <span class="vicon"><i class="fa-solid fa-circle-info"></i></span>
+          <div><strong>Waiting for input</strong>
+            <p>Fill the details and press Predict Churn.</p>
+          </div>
+        </div>
+        {% endif %}
+        <div class="meta">
+          <span><i class="fa-solid fa-gear"></i> Threshold: {{ threshold }}</span><b></b>
+          <span><i class="fa-solid fa-chart-simple"></i> ROC-AUC: {{ roc_auc }}</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('select, input[type="number"], .switch input').forEach((control) => {
+      control.addEventListener('change', () => {
+        const target = control.closest('.switch') || control;
+        target.classList.remove('selection-feedback');
+        void target.offsetWidth;
+        target.classList.add('selection-feedback');
+      });
+    });
+  </script>
+</body>
+
+</html>
